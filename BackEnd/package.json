@@ -1,0 +1,14 @@
+{
+  "name": "backendsopekocko",
+  "version": "1.0.0",
+  "description": "création de l'API So Pekocko",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "FredTams",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
