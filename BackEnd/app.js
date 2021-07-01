@@ -5,9 +5,10 @@ const mongoose = require("mongoose");
 
 const path = require("path");
 
-const sauceRoutes = require("./routes/sauce");
+const saucesRoutes = require("./routes/sauce");
 const userRoutes = require("./routes/user");
 
+///-----CONNEXION À LA BASE MONGODB-----///
 mongoose
   .connect(
     "mongodb+srv://FredTams:ElliotNina2433@clusterft.72nk6.mongodb.net/FTDatabase?retryWrites=true&w=majority",
@@ -23,6 +24,7 @@ mongoose
 
 const app = express(); // app = notre application
 
+///-----CORS-----///
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -40,7 +42,7 @@ app.use(bodyParser.json());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use("/api/sauce", sauceRoutes);
+app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
 
 module.exports = app; // exporter cette application
