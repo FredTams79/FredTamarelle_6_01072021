@@ -1,5 +1,5 @@
 const Sauce = require("../models/sauce");
-const fs = require("fs"); // fs = file system
+const fs = require("fs"); // Package fs = file system qui permet de modifier ou supprimer des fichiers
 
 ///-----CRÉER UNE SAUCE-----///
 exports.createSauce = (req, res, next) => {
@@ -66,3 +66,40 @@ exports.getAllSauces = (req, res, next) => {
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(400).json({ error }));
 };
+
+///-----GESTION DES LIKES ET DISLIKES-----///
+/*
+exports.sauceLike = (req, res, next) => {
+  const userId = req.body.userId; 
+  const like = req.body.like; 
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+       if (like == 1) {                 //l'utilisateur aime la sauce.
+         sauce.usersLiked;
+         sauce.liked += 1;
+       } else if (like == 0) {          //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
+         if (sauce.usersLiked) {
+          sauce.liked -= 1;
+         }
+         if (sauce.usersDisliked) {
+          sauce.disliked -= 1;
+         }
+       } else if (like == -1) {         //l'utilisateur n'aime pas la sauce.
+        sauce.usersDisliked;
+        sauce.disliked += 1;
+       }
+      })
+    .catch((error) => res.status(400).json({ error }));
+};
+*/
+/*
+Définit le statut "j'aime" pour userID fourni.
+Si j'aime = 1, l'utilisateur aime la sauce.
+Si j'aime = 0, l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
+Si j'aime = -1, l'utilisateur n'aime pas la sauce.
+
+L'identifiant de l'utilisateur doit être ajouté ou supprimé du tableau approprié,
+en gardant une trace de ses préférences et en l'empêchant
+d'aimer ou de ne pas aimer la même sauce plusieurs fois.
+Nombre total de "j'aime" et de "je n'aime pas" à mettre à jour avec chaque "j'aime".
+*/

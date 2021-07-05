@@ -1,12 +1,12 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt"); //Plug in pour hasher les password
+const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
 
 const User = require("../models/user");
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {
   bcrypt
-    .hash(req.body.password, 10)
+    .hash(req.body.password, 10) //Salage du mot de passe à 10 reprises
     .then((hash) => {
       //création de l'objet utilisateur
       const user = new User({
@@ -33,7 +33,7 @@ exports.login = (req, res, next) => {
       }
       //comparaison des mots de passe
       bcrypt
-        .compare(req.body.password, user.password)
+        .compare(req.body.password, user.password) //compare le password soumis avec le password de la base de données
         .then((valid) => {
           //si invalide = mdp incorrect
           if (!valid) {
@@ -43,7 +43,7 @@ exports.login = (req, res, next) => {
           res.status(200).json({
             userId: user._id,
             token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
-              expiresIn: "24h",
+              expiresIn: "24h", //TOKEN généré de 24h
             }),
           });
         })

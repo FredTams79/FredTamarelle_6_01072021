@@ -1,6 +1,6 @@
 ///-------créer un serveur Node-------///
-const http = require("http");
-const app = require("./app"); // importer notre application
+const http = require("http"); //Importation du package http
+const app = require("./app"); //Importation de notre application = app pour son utilisation sur le serveur
 
 ///------gestion du port------///
 const normalizePort = (val) => {
@@ -43,7 +43,7 @@ const errorHandler = (error) => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app); // création du serveur qui utilise app
 
 server.on("error", errorHandler);
 server.on("listening", () => {

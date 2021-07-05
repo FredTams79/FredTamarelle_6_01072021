@@ -1,12 +1,14 @@
-const express = require("express");
-const router = express.Router();
+const express = require("express"); //importation d' Express
+const router = express.Router(); //Importation du router Express
 
 const auth = require("../middleware/auth");
-const multer = require("../middleware/multer-config");
+const multer = require("../middleware/multer-config"); //Importation de multer pour la gestion des images
 
 const sauceCtrl = require("../controllers/sauce");
 
 router.post("/", auth, multer, sauceCtrl.createSauce);
+
+// router.post("/:id/like", auth, multer, sauceCtrl.likeSauce);   // en cours de création
 
 router.put("/:id", auth, multer, sauceCtrl.modifySauce);
 
