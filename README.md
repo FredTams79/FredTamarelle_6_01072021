@@ -46,6 +46,8 @@ Sur Windows, ces installations nécessitent d'utiliser PowerShell en tant qu'adm
   - `npm start` ou `ng serve`
 - Rendez-vous sur :
   - `http://localhost:4200/`
+  - pour la création d'un compte il vous faudra un **mot de passe** qui devra contenir au minimum 6 caractères dont :  
+    _2 chiffres, 1 minuscule, 1 symbole et sans espace_.
 
 #### :office:Partie Back-End
 

@@ -8,7 +8,7 @@ const sauceCtrl = require("../controllers/sauce");
 
 router.post("/", auth, multer, sauceCtrl.createSauce);
 
-// router.post("/:id/like", auth, multer, sauceCtrl.likeSauce);   // en cours de création
+router.post("/:id/like", auth, multer, sauceCtrl.sauceLike); // en cours de création
 
 router.put("/:id", auth, multer, sauceCtrl.modifySauce);
 

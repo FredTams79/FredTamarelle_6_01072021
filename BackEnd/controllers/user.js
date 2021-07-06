@@ -1,25 +1,52 @@
 const bcrypt = require("bcrypt"); //Plug in pour hasher les password
 const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
 
+const passwordValidator = require("password-validator"); //Package qui permet de compléxifier un mot de passe
+const schema = new passwordValidator(); //Le mot de passe doit contenir au minimum 6 caractères avec au moins 2 chiffres, 1 minuscule, 1 symbole et sans espace.
+schema
+  .is()
+  .min(6) // Minimum 6 caractères
+  .is()
+  .max(20) // Maximum 20 caractères
+  .has()
+  .symbols() // Le mot de passe doit avoir au moins 1 symbole
+  .has()
+  .lowercase() // Le mot de passe doit avoir au moins 1 minuscule
+  .has()
+  .digits(2) // Le mot de passe doit avoir au moins 2 chiffres
+  .has()
+  .not()
+  .spaces(); // Le mot de passe ne doit pas avoir d'espace
+
 const User = require("../models/user");
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {
-  bcrypt
-    .hash(req.body.password, 10) //Salage du mot de passe à 10 reprises
-    .then((hash) => {
-      //création de l'objet utilisateur
-      const user = new User({
-        email: req.body.email,
-        password: hash,
-      });
-      //sauvegarde de l'utilisateur
-      user
-        .save()
-        .then(() => res.status(201).json({ message: "Utilisateur crée !" }))
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(500).json({ error }));
+  //Test du format du mot de passe
+  //Si mdp invalide
+  if (!schema.validate(req.body.password)) {
+    return res.status(400).json({
+      error:
+        "Entrer un mot de passe valide svp !\nil doit contenir au minimum 6 caractères dont 2 chiffres, 1 minuscule, 1 symbole et sans espace - merci !",
+    });
+    //Si mdp valide
+  } else if (schema.validate(req.body.password)) {
+    bcrypt
+      .hash(req.body.password, 10) //Salage du mot de passe à 10 reprises
+      .then((hash) => {
+        //création de l'objet utilisateur
+        const user = new User({
+          email: req.body.email,
+          password: hash,
+        });
+        //sauvegarde de l'utilisateur
+        user
+          .save()
+          .then(() => res.status(201).json({ message: "Utilisateur crée !" }))
+          .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  }
 };
 
 ///-----CONNEXION UTILISATEUR-----///
