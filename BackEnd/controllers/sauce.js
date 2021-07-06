@@ -68,16 +68,21 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 ///-----GESTION DES LIKES ET DISLIKES-----///
-/*
+
 exports.sauceLike = (req, res, next) => {
-  const userId = req.body.userId; 
-  const like = req.body.like; 
+  const userId = req.body.userId;
+  const like = req.body.like;
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
-       if (like == 1) {                 //l'utilisateur aime la sauce.
-         sauce.usersLiked;
-         sauce.liked += 1;
-       } else if (like == 0) {          //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
+      if (like == 1) {
+        //l'utilisateur aime la sauce.
+        sauce.usersLiked.push(userId);
+        sauce.liked += like;
+        Sauce.updateOne(
+          { _id: req.params.id },
+          { $inc: { like: 1 }, $push: { usersLiked: req.body.userId } } //$inc = Incrémenter un champ numérique existant & $push = Mettre à jour un tableau (ajouter un nouvel élément)
+        );
+      } /* else if (like == 0) {          //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
          if (sauce.usersLiked) {
           sauce.liked -= 1;
          }
@@ -87,11 +92,11 @@ exports.sauceLike = (req, res, next) => {
        } else if (like == -1) {         //l'utilisateur n'aime pas la sauce.
         sauce.usersDisliked;
         sauce.disliked += 1;
-       }
-      })
+       }*/
+    })
     .catch((error) => res.status(400).json({ error }));
 };
-*/
+
 /*
 Définit le statut "j'aime" pour userID fourni.
 Si j'aime = 1, l'utilisateur aime la sauce.
