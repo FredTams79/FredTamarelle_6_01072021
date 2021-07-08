@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt"); //Plug in pour hasher les password
 const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
 
-const User = require("../models/user");
+const User = require("../models/User");
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {

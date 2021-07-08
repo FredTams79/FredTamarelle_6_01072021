@@ -1,4 +1,4 @@
-const Sauce = require("../models/sauce");
+const Sauce = require("../models/Sauce");
 const fs = require("fs"); // Package fs = file system qui permet de modifier ou supprimer des fichiers
 
 ///-----CRÉER UNE SAUCE-----///
@@ -83,8 +83,8 @@ exports.likeSauce = (req, res, next) => {
         Sauce.updateOne(
           { _id: sauceId },
           {
-            $inc: { like: 1 }, //$inc = Incrémenter un champ numérique existant ici 1
-            $push: { usersLiked: req.body.userId }, //$push = Mettre à jour le tableau usersLiked
+            $inc: { like: 1 }, //$inc = Incrémenter un champ numérique existant ici +1
+            $push: { usersLiked: userId }, //$push = Mettre à jour le tableau usersLiked
           }
         )
           .then(() => {
@@ -100,12 +100,13 @@ exports.likeSauce = (req, res, next) => {
         Sauce.updateOne({ _id: sauceId })
           .then((sauce) => {
             //l'utilisateur annule la sauce qu'il aime
-            if (sauce.usersLiked.find((user) => user === req.body.userId)) {
+            // on cherche si l'utilisateur est déjà dans le tableau usersLiked
+            if (sauce.usersLiked.find((user) => user === userId)) {
               Sauce.updateOne(
                 { _id: sauceId },
                 {
-                  $inc: { like: -1 },
-                  $push: { usersLiked: req.body.userId },
+                  $inc: { like: -1 }, // on décrémente la valeur des likes avec un -1
+                  $pull: { usersLiked: userId }, // on retire l'utilisateur du tableau
                 }
               )
                 .then(() => {
@@ -118,20 +119,19 @@ exports.likeSauce = (req, res, next) => {
                 });
             }
             //l'utilisateur annule la sauce qu'il n'aime pas
-            if (sauce.usersDisliked.find((user) => user === req.body.userId)) {
+            // on cherche si l'utilisateur est déjà dans le tableau usersDisliked
+            if (sauce.usersDisliked.find((user) => user === userId)) {
               Sauce.updateOne(
                 { _id: sauceId },
                 {
                   $inc: { dislike: -1 },
-                  $push: { usersDisliked: req.body.userId },
+                  $pull: { usersDisliked: userId },
                 }
               )
                 .then(() => {
-                  res
-                    .status(200)
-                    .json({
-                      message: "Votre avis je n'aime pas a été annulé !",
-                    });
+                  res.status(200).json({
+                    message: "Votre avis je n'aime pas a été annulé !",
+                  });
                 })
                 .catch((error) => {
                   res.status(400).json({ error: error });
@@ -147,7 +147,7 @@ exports.likeSauce = (req, res, next) => {
           { _id: sauceId },
           {
             $inc: { dislike: 1 },
-            $push: { usersDisliked: req.body.userId },
+            $push: { usersDisliked: userId },
           }
         )
           .then(() => {
