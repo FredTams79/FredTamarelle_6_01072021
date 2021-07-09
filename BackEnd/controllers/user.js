@@ -1,7 +1,37 @@
 const bcrypt = require("bcrypt"); //Plug in pour hasher les password
 const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
+const passwordValidator = require("password-validator"); //Plug in qui permet de compléxifier un mot de passe
+const MaskData = require("../node_modules/maskdata"); // Plug in pour masquer l'e-mail de l'utilisateur mais peut aussi masquer différents types de données
 
 const User = require("../models/User");
+
+///-----VALIDATEUR DE MOT DE PASSE UTILISATEUR-----///
+const schema = new passwordValidator(); //Le mot de passe doit contenir au minimum 6 caractères avec au moins 2 chiffres, 1 minuscule, 1 symbole et sans espace.
+schema
+  .is()
+  .min(6) // Minimum 6 caractères
+  .is()
+  .max(20) // Maximum 20 caractères
+  .has()
+  .symbols() // Le mot de passe doit avoir au moins 1 symbole
+  .has()
+  .lowercase() // Le mot de passe doit avoir au moins 1 minuscule
+  .has()
+  .digits(2) // Le mot de passe doit avoir au moins 2 chiffres
+  .has()
+  .not()
+  .spaces(); // Le mot de passe ne doit pas avoir d'espace
+
+///-----MASQUER L'EMAIL UTILISATEUR-----///
+const emailMask2Options = {
+  maskWith: "*",
+  unmaskedStartCharactersBeforeAt: 2, //Nombre de caractères masqués avant @ -> 2
+  unmaskedEndCharactersAfterAt: 1, //Nombre de caractères masqués après @ -> 1
+  maskAtTheRate: false,
+};
+
+const email = "my.test.email@testEmail.com";
+const maskedEmail = MaskData.maskEmail2(email, emailMask2Options);
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {
