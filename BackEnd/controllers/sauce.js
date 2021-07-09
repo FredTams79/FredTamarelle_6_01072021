@@ -76,14 +76,13 @@ exports.likeSauce = (req, res, next) => {
 
   Sauce.findOne({ _id: sauceId })
     .then((sauce) => {
-      if (like == 1) {
+      if (like === 1) {
         //l'utilisateur aime la sauce.
         sauce.usersLiked.push(userId);
-        sauce.likes += like;
         Sauce.updateOne(
           { _id: sauceId },
           {
-            $inc: { like: 1 }, //$inc = Incrémenter un champ numérique existant ici +1
+            $inc: { likes: +1 }, //$inc = Incrémenter un champ numérique existant ici +1
             $push: { usersLiked: userId }, //$push = Mettre à jour le tableau usersLiked
           }
         )
@@ -95,9 +94,9 @@ exports.likeSauce = (req, res, next) => {
           .catch((error) => {
             res.status(400).json({ error: error });
           });
-      } else if (like == 0) {
+      } else if (like === 0) {
         //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
-        Sauce.updateOne({ _id: sauceId })
+        Sauce.findOne({ _id: sauceId })
           .then((sauce) => {
             //l'utilisateur annule la sauce qu'il aime
             // on cherche si l'utilisateur est déjà dans le tableau usersLiked
@@ -105,7 +104,7 @@ exports.likeSauce = (req, res, next) => {
               Sauce.updateOne(
                 { _id: sauceId },
                 {
-                  $inc: { like: -1 }, // on décrémente la valeur des likes avec un -1
+                  $inc: { likes: -1 }, // on décrémente la valeur des likes avec un -1
                   $pull: { usersLiked: userId }, // on retire l'utilisateur du tableau
                 }
               )
@@ -124,7 +123,7 @@ exports.likeSauce = (req, res, next) => {
               Sauce.updateOne(
                 { _id: sauceId },
                 {
-                  $inc: { dislike: -1 },
+                  $inc: { dislikes: -1 },
                   $pull: { usersDisliked: userId },
                 }
               )
@@ -139,14 +138,13 @@ exports.likeSauce = (req, res, next) => {
             }
           })
           .catch((error) => res.status(400).json({ error: error }));
-      } else if (like == -1) {
+      } else if (like === -1) {
         //l'utilisateur n'aime pas la sauce.
         sauce.usersDisliked.push(userId);
-        sauce.dislikes += like;
         Sauce.updateOne(
           { _id: sauceId },
           {
-            $inc: { dislike: 1 },
+            $inc: { dislikes: +1 },
             $push: { usersDisliked: userId },
           }
         )
