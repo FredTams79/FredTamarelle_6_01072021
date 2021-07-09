@@ -1,24 +1,7 @@
 const bcrypt = require("bcrypt"); //Plug in pour hasher les password
 const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
 
-const passwordValidator = require("password-validator"); //Package qui permet de compléxifier un mot de passe
-const schema = new passwordValidator(); //Le mot de passe doit contenir au minimum 6 caractères avec au moins 2 chiffres, 1 minuscule, 1 symbole et sans espace.
-schema
-  .is()
-  .min(6) // Minimum 6 caractères
-  .is()
-  .max(20) // Maximum 20 caractères
-  .has()
-  .symbols() // Le mot de passe doit avoir au moins 1 symbole
-  .has()
-  .lowercase() // Le mot de passe doit avoir au moins 1 minuscule
-  .has()
-  .digits(2) // Le mot de passe doit avoir au moins 2 chiffres
-  .has()
-  .not()
-  .spaces(); // Le mot de passe ne doit pas avoir d'espace
-
-const User = require("../models/user");
+const User = require("../models/User");
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {

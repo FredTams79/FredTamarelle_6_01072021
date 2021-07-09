@@ -1,4 +1,4 @@
-const Sauce = require("../models/sauce");
+const Sauce = require("../models/Sauce");
 const fs = require("fs"); // Package fs = file system qui permet de modifier ou supprimer des fichiers
 
 ///-----CRÉER UNE SAUCE-----///
@@ -69,45 +69,100 @@ exports.getAllSauces = (req, res, next) => {
 
 ///-----GESTION DES LIKES ET DISLIKES-----///
 
-exports.sauceLike = (req, res, next) => {
+exports.likeSauce = (req, res, next) => {
   const userId = req.body.userId;
   const like = req.body.like;
-  Sauce.findOne({ _id: req.params.id })
+  const sauceId = req.params.id;
+
+  Sauce.findOne({ _id: sauceId })
     .then((sauce) => {
-      if (like == 1) {
+      if (like === 1) {
         //l'utilisateur aime la sauce.
         sauce.usersLiked.push(userId);
-        sauce.liked += like;
         Sauce.updateOne(
-          { _id: req.params.id },
-          { $inc: { like: 1 }, $push: { usersLiked: req.body.userId } } //$inc = Incrémenter un champ numérique existant & $push = Mettre à jour un tableau (ajouter un nouvel élément)
-        );
-      } /*else if (like == 0) {          //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
-         if (sauce.usersLiked) {
-          sauce.liked -= 1;
-         }
-         if (sauce.usersDisliked) {
-          sauce.disliked -= 1;
-         }
-       }  else if (like == -1) {
+          { _id: sauceId },
+          {
+            $inc: { likes: +1 }, //$inc = Incrémenter un champ numérique existant ici +1
+            $push: { usersLiked: userId }, //$push = Mettre à jour le tableau usersLiked
+          }
+        )
+          .then(() => {
+            res.status(200).json({
+              message: "Merci de votre avis et d'avoir aimé cette sauce !",
+            });
+          })
+          .catch((error) => {
+            res.status(400).json({ error: error });
+          });
+      } else if (like === 0) {
+        //l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
+        Sauce.findOne({ _id: sauceId })
+          .then((sauce) => {
+            //l'utilisateur annule la sauce qu'il aime
+            // on cherche si l'utilisateur est déjà dans le tableau usersLiked
+            if (sauce.usersLiked.find((user) => user === userId)) {
+              Sauce.updateOne(
+                { _id: sauceId },
+                {
+                  $inc: { likes: -1 }, // on décrémente la valeur des likes avec un -1
+                  $pull: { usersLiked: userId }, // on retire l'utilisateur du tableau
+                }
+              )
+                .then(() => {
+                  res
+                    .status(200)
+                    .json({ message: "Votre avis j'aime a été annulé !" });
+                })
+                .catch((error) => {
+                  res.status(400).json({ error: error });
+                });
+            }
+            //l'utilisateur annule la sauce qu'il n'aime pas
+            // on cherche si l'utilisateur est déjà dans le tableau usersDisliked
+            if (sauce.usersDisliked.find((user) => user === userId)) {
+              Sauce.updateOne(
+                { _id: sauceId },
+                {
+                  $inc: { dislikes: -1 },
+                  $pull: { usersDisliked: userId },
+                }
+              )
+                .then(() => {
+                  res.status(200).json({
+                    message: "Votre avis je n'aime pas a été annulé !",
+                  });
+                })
+                .catch((error) => {
+                  res.status(400).json({ error: error });
+                });
+            }
+          })
+          .catch((error) => res.status(400).json({ error: error }));
+      } else if (like === -1) {
         //l'utilisateur n'aime pas la sauce.
         sauce.usersDisliked.push(userId);
-        sauce.disliked += like;
         Sauce.updateOne(
-          { _id: req.params.id },
-          { $inc: { like: 1 }, $push: { usersDisliked: req.body.userId } }
-        );
-      }*/
+          { _id: sauceId },
+          {
+            $inc: { dislikes: +1 },
+            $push: { usersDisliked: userId },
+          }
+        )
+          .then(() => {
+            res.status(200).json({
+              message:
+                "Désolé que vous n'aimiez pas cette sauce, votre avis a été pris en compte !",
+            });
+          })
+          .catch((error) => {
+            res.status(400).json({ error: error });
+          });
+      }
     })
     .catch((error) => res.status(400).json({ error }));
 };
 
 /*
-Définit le statut "j'aime" pour userID fourni.
-Si j'aime = 1, l'utilisateur aime la sauce.
-Si j'aime = 0, l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas.
-Si j'aime = -1, l'utilisateur n'aime pas la sauce.
-
 L'identifiant de l'utilisateur doit être ajouté ou supprimé du tableau approprié,
 en gardant une trace de ses préférences et en l'empêchant
 d'aimer ou de ne pas aimer la même sauce plusieurs fois.
