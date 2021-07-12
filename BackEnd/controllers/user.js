@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt"); //Plug in pour hasher les password
 const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection avec des tokens uniques
 const passwordValidator = require("password-validator"); //Plug in qui permet de compléxifier un mot de passe
-const MaskData = require("../node_modules/maskdata"); // Plug in pour masquer l'e-mail de l'utilisateur mais peut aussi masquer différents types de données
 
 const User = require("../models/User");
+const maskData = require("../node_modules/maskdata"); // Plug in pour masquer l'e-mail de l'utilisateur mais peut aussi masquer différents types de données
 
 ///-----VALIDATEUR DE MOT DE PASSE UTILISATEUR-----///
 const schema = new passwordValidator(); //Le mot de passe doit contenir au minimum 6 caractères avec au moins 2 chiffres, 1 minuscule, 1 symbole et sans espace.
@@ -30,9 +30,6 @@ const emailMask2Options = {
   maskAtTheRate: false,
 };
 
-const email = "my.test.email@testEmail.com";
-const maskedEmail = MaskData.maskEmail2(email, emailMask2Options);
-
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {
   //Test du format du mot de passe
@@ -49,7 +46,7 @@ exports.signup = (req, res, next) => {
       .then((hash) => {
         //création de l'objet utilisateur
         const user = new User({
-          email: req.body.email,
+          email: maskData.maskEmail2(req.body.email, emailMask2Options),
           password: hash,
         });
         //sauvegarde de l'utilisateur
@@ -65,7 +62,9 @@ exports.signup = (req, res, next) => {
 ///-----CONNEXION UTILISATEUR-----///
 exports.login = (req, res, next) => {
   //récupération de l'utilisateur
-  User.findOne({ email: req.body.email })
+  User.findOne({
+    email: maskData.maskEmail2(req.body.email, emailMask2Options),
+  })
     .then((user) => {
       //si l'utilisateur n'existe pas
       if (!user) {
