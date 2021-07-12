@@ -46,7 +46,7 @@ exports.signup = (req, res, next) => {
       .then((hash) => {
         //création de l'objet utilisateur
         const user = new User({
-          email: maskData.maskEmail2(req.body.email, emailMask2Options),
+          email: maskData.maskEmail2(req.body.email, emailMask2Options), //utilisation de maskdata pour masquer l'email de l'utilisateur
           password: hash,
         });
         //sauvegarde de l'utilisateur
@@ -63,7 +63,7 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
   //récupération de l'utilisateur
   User.findOne({
-    email: maskData.maskEmail2(req.body.email, emailMask2Options),
+    email: maskData.maskEmail2(req.body.email, emailMask2Options), //utilisation de maskdata
   })
     .then((user) => {
       //si l'utilisateur n'existe pas
