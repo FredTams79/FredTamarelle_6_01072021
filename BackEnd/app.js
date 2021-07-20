@@ -23,7 +23,7 @@ const userRoutes = require("./routes/user");
 ///-----CONNEXION À LA BASE MONGODB-----///
 mongoose
   .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clusterft.72nk6.mongodb.net/${process.env.DB_HOST}?retryWrites=true&w=majority`,
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clusterft.72nk6.mongodb.net/${process.env.DB_HOST}?retryWrites=true&w=majority`, //`mongodb+srv://BumbleBrice:bGe5eSp4twrEKTN@cluster0.bdqfu.mongodb.net/<dbname>?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useFindAndModify: false,
