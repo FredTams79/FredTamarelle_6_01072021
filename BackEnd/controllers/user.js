@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken"); //Plug in pour sécuriser la connection ave
 const passwordValidator = require("password-validator"); //Plug in qui permet de compléxifier un mot de passe
 
 const User = require("../models/User");
-const maskData = require("../node_modules/maskdata"); // Plug in pour masquer l'e-mail de l'utilisateur mais peut aussi masquer différents types de données
+//const maskData = require("../node_modules/maskdata"); // Plug in pour masquer l'e-mail de l'utilisateur mais peut aussi masquer différents types de données
 
 ///-----VALIDATEUR DE MOT DE PASSE UTILISATEUR-----///
 const schema = new passwordValidator(); //Le mot de passe doit contenir au minimum 6 caractères avec au moins 2 chiffres, 1 minuscule, 1 symbole et sans espace.
@@ -23,12 +23,12 @@ schema
   .spaces(); // Le mot de passe ne doit pas avoir d'espace
 
 ///-----MASQUER L'EMAIL UTILISATEUR-----///
-const emailMask2Options = {
+/*const emailMask2Options = {
   maskWith: "*",
   unmaskedStartCharactersBeforeAt: 2, //Nombre de caractères masqués avant @ -> 2
   unmaskedEndCharactersAfterAt: 1, //Nombre de caractères masqués après @ -> 1
   maskAtTheRate: false,
-};
+};*/
 
 ///-----INSCRIPTION UTILISATEUR-----///
 exports.signup = (req, res, next) => {
@@ -46,7 +46,7 @@ exports.signup = (req, res, next) => {
       .then((hash) => {
         //création de l'objet utilisateur
         const user = new User({
-          email: maskData.maskEmail2(req.body.email, emailMask2Options), //utilisation de maskdata pour masquer l'email de l'utilisateur
+          email: req.body.email, //si utilisation de maskdata pour masquer l'email de l'utilisateur : email: maskData.maskEmail2(req.body.email, emailMask2Options),
           password: hash,
         });
         //sauvegarde de l'utilisateur
@@ -63,7 +63,7 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
   //récupération de l'utilisateur
   User.findOne({
-    email: maskData.maskEmail2(req.body.email, emailMask2Options), //utilisation de maskdata
+    email: req.body.email, //si utilisation de maskdata : email: maskData.maskEmail2(req.body.email, emailMask2Options),
   })
     .then((user) => {
       //si l'utilisateur n'existe pas
