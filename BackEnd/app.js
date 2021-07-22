@@ -21,6 +21,7 @@ const saucesRoutes = require("./routes/sauce");
 const userRoutes = require("./routes/user");
 
 ///-----CONNEXION À LA BASE MONGODB-----///
+// pensez à remplacer les noms de variables par vos données de MongoDB dans le fichier ".envExemple" et de le renommer ".env" ^^
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clusterft.72nk6.mongodb.net/${process.env.DB_HOST}?retryWrites=true&w=majority`, //`mongodb+srv://BumbleBrice:bGe5eSp4twrEKTN@cluster0.bdqfu.mongodb.net/<dbname>?retryWrites=true&w=majority`,
