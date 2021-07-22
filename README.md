@@ -56,7 +56,8 @@ Sur Windows, ces installations nécessitent d'utiliser PowerShell en tant qu'adm
   - `git clone https://github.com/lifeae/OC_WD_P6 backend`
 - Installez les librairies nécessaires pour faire fonctionner le serveur back-end :
   - `npm install`
-  - Mongoose - Bcrypt - Body-Parser - Express - jsonwebtoken - Multer - mongoose-unique-validator - Nodemon
+  - Mongoose - Bcrypt - Body-Parser - Express - jsonwebtoken - Multer - mongoose-unique-validator - Nodemon - ...
+- Pensez à remplacer les noms de variables par vos données de MongoDB dans le fichier ".envExemple"
 - Lancez le serveur
   - `node server` ou `nodemon server`
 - Rendez-vous sur :
