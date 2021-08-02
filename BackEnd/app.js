@@ -14,7 +14,7 @@ const dotenv = require("dotenv").config(); // Dotenv est un module sans dépenda
 const rateLimit = require("express-rate-limit"); // Middleware de base à limitation de débit pour Express. À utiliser pour limiter les demandes répétées aux API publiques et/ou aux points de terminaison tels que la réinitialisation de mot de passe.
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // // limite chaque IP à 100 requêtes par windowMs
+  max: 000, // // limite chaque IP à 100 requêtes par windowMs
 });
 
 const saucesRoutes = require("./routes/sauce");
@@ -51,9 +51,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(helmet()); // L'application utilise toutes les protections helmet
 app.use(limiter); // S'applique à toutes les demandes rateLimit
 app.use(bodyParser.json()); // L'application utilise bodyparser
+app.use(helmet()); // L'application utilise toutes les protections helmet
 
 app.use("/images", express.static(path.join(__dirname, "images"))); //L'application utilise des images
 
